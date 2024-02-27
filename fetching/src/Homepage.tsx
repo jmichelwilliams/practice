@@ -12,12 +12,13 @@ interface ISSData {
 const fetchCoordinates = async () => {
   try {
     const response = await fetch('http://api.open-notify.org/iss-now.json')
+
     if (!response.ok) {
       throw new Error('failed to fetch ISS data')
     }
 
     const parsedResponse: ISSData = await response.json()
-    console.log('parsedResponse: ', parsedResponse)
+
     return parsedResponse
   } catch (error) {
     console.log(error)
@@ -34,6 +35,17 @@ const Homepage: React.FC = () => {
     }
   }
   console.log('coordinates: ', coordinates)
+  // Show skeleton while im fetching
+  // install react testing library
+  /**
+   * AC1: show skeleton while fetching
+   *
+   * AC2:
+   * install react testing library
+   * test homepage component (Homepage.spec.tsx)
+   * on the test, assert that I see the header text and the button
+   */
+
   return (
     <>
       <Container>
