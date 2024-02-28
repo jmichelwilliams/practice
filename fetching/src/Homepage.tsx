@@ -1,52 +1,46 @@
+/* eslint-disable prettier/prettier */
 /* eslint-disable no-nested-ternary */
-import React, { useState } from 'react'
-import styled from 'styled-components'
-import { Skeleton, Typography } from '@mui/material'
-
-interface ISSData {
-  message: string
-  timestamp: number
-  iss_position: {
-    longitude: number
-    latitude: number
-  }
-}
+import React, { useState } from 'react';
+import styled from 'styled-components';
+import { Skeleton, Typography } from '@mui/material';
+import { ISSData } from './types';
 
 const Container = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-`
+`;
 
 const fetchCoordinates = async (): Promise<ISSData | undefined> => {
   try {
-    const response = await fetch('http://api.open-notify.org/iss-now.json')
+    const response = await fetch('http://api.open-notify.org/iss-now.json');
 
     if (!response.ok) {
-      throw new Error('failed to fetch ISS data')
+      throw new Error('failed to fetch ISS data');
     }
 
-    const parsedResponse: ISSData = await response.json()
+    const parsedResponse: ISSData = await response.json();
 
-    return parsedResponse
+    return parsedResponse;
   } catch (error) {
-    console.log('error: ', error)
-    return undefined
+    console.log('error: ', error);
+    return undefined;
   }
-}
+};
+
 const Homepage: React.FC = () => {
-  const [coordinates, setCoordinates] = useState<ISSData | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
+  const [coordinates, setCoordinates] = useState<ISSData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClick = async () => {
-    setIsLoading(true)
-    const fetchedCoordinates = await fetchCoordinates()
-    setIsLoading(false)
+    setIsLoading(true);
+    const fetchedCoordinates = await fetchCoordinates();
+    setIsLoading(false);
 
     if (fetchedCoordinates) {
-      setCoordinates(fetchedCoordinates)
+      setCoordinates(fetchedCoordinates);
     }
-  }
+  };
 
   return (
     <Container>
@@ -69,7 +63,7 @@ const Homepage: React.FC = () => {
         )}
       </Typography>
     </Container>
-  )
-}
+  );
+};
 
-export default Homepage
+export default Homepage;
