@@ -1,5 +1,7 @@
+/* eslint-disable no-nested-ternary */
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { Skeleton, Typography } from '@mui/material'
 
 interface ISSData {
   message: string
@@ -9,7 +11,14 @@ interface ISSData {
     latitude: number
   }
 }
-const fetchCoordinates = async () => {
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`
+
+const fetchCoordinates = async (): Promise<ISSData | undefined> => {
   try {
     const response = await fetch('http://api.open-notify.org/iss-now.json')
 
@@ -21,45 +30,46 @@ const fetchCoordinates = async () => {
 
     return parsedResponse
   } catch (error) {
-    console.log(error)
+    console.log('error: ', error)
+    return undefined
   }
 }
 const Homepage: React.FC = () => {
   const [coordinates, setCoordinates] = useState<ISSData | null>(null)
+  const [isLoading, setIsLoading] = useState(false)
 
   const handleClick = async () => {
+    setIsLoading(true)
     const fetchedCoordinates = await fetchCoordinates()
+    setIsLoading(false)
 
     if (fetchedCoordinates) {
       setCoordinates(fetchedCoordinates)
     }
   }
-  console.log('coordinates: ', coordinates)
-  // Show skeleton while im fetching
-  // install react testing library
-  /**
-   * AC1: show skeleton while fetching
-   *
-   * AC2:
-   * install react testing library
-   * test homepage component (Homepage.spec.tsx)
-   * on the test, assert that I see the header text and the button
-   */
 
   return (
-    <>
-      <Container>
-        <h1>ISS Space Station Location</h1>
-        <button onClick={handleClick}>Click to get Location</button>
-        {coordinates && <p>{coordinates.iss_position.latitude}</p>}
-      </Container>
-    </>
+    <Container>
+      <h1>ISS Space Station Location</h1>
+      <button type="button" onClick={handleClick}>
+        Click to get Location
+      </button>
+      <Typography>
+        {isLoading ? (
+          <Skeleton animation="wave" width={210} />
+        ) : (
+          coordinates && `Latitude: ${coordinates?.iss_position.latitude}`
+        )}
+      </Typography>
+      <Typography>
+        {isLoading ? (
+          <Skeleton animation="wave" width={210} />
+        ) : (
+          coordinates && `Longitude: ${coordinates.iss_position.longitude}`
+        )}
+      </Typography>
+    </Container>
   )
 }
 
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`
 export default Homepage
